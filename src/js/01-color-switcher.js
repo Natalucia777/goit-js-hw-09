@@ -16,7 +16,7 @@ function buttonStartAction() {
     buttonStart.disabled = true;
   }
 }
-buttonStop.eddEventListener('click', buttonStopAction);
+buttonStop.addEventListener('click', buttonStopAction);
 function buttonStopAction() {
   clearInterval(intervalID);
   buttonStart.disabled = false;
