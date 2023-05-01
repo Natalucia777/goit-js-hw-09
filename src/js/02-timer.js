@@ -1,6 +1,6 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
-import Notiflix from 'notiflix';
+import Notiflix, { Notify } from 'notiflix';
 // import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const buttonStart = document.querySelector('button[data-start]');
@@ -17,10 +17,21 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-
-
-
-    // console.log(selectedDates[0]);
+    if (selectedDates[0] < new Date()) {
+      Notify.failure("Please choose a date in the future");
+      return;
+    }
+    const now = new Date();
+    const selectDate = selectedDates[0].getTime();
+    const timeNow = now.getTime();
+    buttonStart.removeAttribute('disabled');
+    let start = timeNow - selectDate;
+    const {days, hours, minutes, seconds} = convertMs(-start);
+    timerDays.textContent = days;
+    timerHours.textContent = hours;
+    timerMinutes.textContent = minutes;
+    timerSeconds.textContent = seconds;
+    localStorage.setItem('timer', -start);
   },
 };
 
@@ -32,6 +43,7 @@ function convertMs(ms) {
   const day = hour * 24;
 
   // Remaining days
+
   const days = Math.floor(ms / day);
   // Remaining hours
   const hours = Math.floor((ms % day) / hour);
