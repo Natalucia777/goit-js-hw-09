@@ -26,6 +26,7 @@ const submitHandler = e => {
   const {
     elements: { delay, step, amount },
   } = e.currentTarget;
+  
 delayInp = Number(delay.value);
 stepInp = Number(step.value);
 amountInp = Number(amount.value);
