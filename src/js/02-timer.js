@@ -1,6 +1,15 @@
 import flatpickr from "flatpickr";
-// Додатковий імпорт стилів
 import "flatpickr/dist/flatpickr.min.css";
+import Notiflix from 'notiflix';
+// import { Notify } from 'notiflix/build/notiflix-notify-aio';
+
+const buttonStart = document.querySelector('button[data-start]');
+const timerDays = document.querySelector('span[data-days]');
+const timerHours = document.querySelector('span[data-hours]');
+const timerMinutes = document.querySelector('span[data-minutes]');
+const timerSeconds = document.querySelector('span[data-seconds]');
+let timerID = null;
+buttonStart.setAttribute('disabled', true);
 
 const options = {
   enableTime: true,
@@ -8,7 +17,10 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    console.log(selectedDates[0]);
+
+
+
+    // console.log(selectedDates[0]);
   },
 };
 
