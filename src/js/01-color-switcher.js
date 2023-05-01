@@ -10,8 +10,7 @@ function getRandomHexColor() {
   return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, 0)}`;
 }
 refs.buttonStart.addEventListener("click", () => {
-    intervalID = setInterval(() => {
-    const randomColor = getRandomHexColor();
+    intervalID = setInterval(() => { const randomColor = getRandomHexColor();
     refs.bodyDoc.style.backgroundColor = randomColor;
     refs.buttonStart.disabled = true;
 }, 1000);});
