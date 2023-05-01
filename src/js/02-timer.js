@@ -9,6 +9,7 @@ const timerHours = document.querySelector('span[data-hours]');
 const timerMinutes = document.querySelector('span[data-minutes]');
 const timerSeconds = document.querySelector('span[data-seconds]');
 let timerID = null;
+let intervalID = null;
 buttonStart.setAttribute('disabled', true);
 
 const options = {
@@ -31,9 +32,8 @@ const options = {
     timerHours.textContent = hours;
     timerMinutes.textContent = minutes;
     timerSeconds.textContent = seconds;
-    localStorage.setItem('timer', -start);
-  },
-};
+    localStorage.setItem('timer', -start); }, };
+flatpickr("#datetime-picker", options);
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -54,7 +54,25 @@ function convertMs(ms) {
 
   return { days, hours, minutes, seconds };
 }
+buttonStart.addEventListener('click', showTimer);
 
+function showTimer() {
+    intervalID = setInterval(() => {
+      if (localStorage.getItem('timer') < 1000) {
+        clearInterval(intervalID)
+        localStorage.removeItem('timer');
+        return; } 
+      let dateTimer = localStorage.getItem('timer') - 1000;
+      localStorage.setItem('timer', (dateTimer))
+      const {days, hours, minutes, seconds} = convertMs(dateTimer);
+      timerDays.textContent = addLeadingZero(`${days}`);
+      timerHours.textContent = addLeadingZero(`${hours}`);
+      timerMinutes.textContent = addLeadingZero(`${minutes}`);
+      timerSeconds.textContent = addLeadingZero(`${seconds}`);
+    }, 1000)
+    }
+const addLeadingZero = value => String(value).padStart(2, "0");
+    
 console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
 console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
 console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}
