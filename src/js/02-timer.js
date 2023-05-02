@@ -12,7 +12,8 @@ const timerSeconds = document.querySelector('span[data-seconds]');
 let timerID = null;
 let intervalID = null;
 buttonStart.setAttribute('disabled', true);
-
+// buttonStart.disabled = true;
+  
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -22,7 +23,11 @@ const options = {
     if (selectedDates[0] < new Date()) {
       Notiflix.Notify.failure('Please choose a date in the future');
       return;
+    } else {
+    buttonStart.removeAttribute('disabled');
+    // buttonStart.disabled = false;
     }
+    
     const now = new Date();
     const selectDate = selectedDates[0].getTime();
     const timeNow = now.getTime();
