@@ -14,6 +14,7 @@ let intervalID = null;
 buttonStart.setAttribute('disabled', true);
 // buttonStart.disabled = true;
   
+
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -41,6 +42,7 @@ const options = {
     localStorage.setItem('timer', -start);
   },
 };
+
 flatpickr('#datetime-picker', options);
 
 function convertMs(ms) {
@@ -62,7 +64,7 @@ function convertMs(ms) {
 
   return { days, hours, minutes, seconds };
 }
-buttonStart.addEventListener('click', showTimer);
+
 
 function showTimer() {
   intervalID = setInterval(() => {
@@ -71,16 +73,18 @@ function showTimer() {
       localStorage.removeItem('timer');
       return;
     }
+
     let dateTimer = localStorage.getItem('timer') - 1000;
     localStorage.setItem('timer', dateTimer);
+    const addLeadingZero = value => String(value).padStart(2, '0');
     const { days, hours, minutes, seconds } = convertMs(dateTimer);
     timerDays.textContent = addLeadingZero(`${days}`);
     timerHours.textContent = addLeadingZero(`${hours}`);
     timerMinutes.textContent = addLeadingZero(`${minutes}`);
     timerSeconds.textContent = addLeadingZero(`${seconds}`);
   }, 1000);
+buttonStart.addEventListener('click', showTimer);
 }
-const addLeadingZero = value => String(value).padStart(2, '0');
 
 console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
 console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
