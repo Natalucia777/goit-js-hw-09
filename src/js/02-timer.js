@@ -1,6 +1,6 @@
-import flatpickr from "flatpickr";
-import "flatpickr/dist/flatpickr.min.css";
-import Notiflix, { Notify } from 'notiflix';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import Notiflix from 'notiflix';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const buttonStart = document.querySelector('button[data-start]');
@@ -8,6 +8,7 @@ const timerDays = document.querySelector('span[data-days]');
 const timerHours = document.querySelector('span[data-hours]');
 const timerMinutes = document.querySelector('span[data-minutes]');
 const timerSeconds = document.querySelector('span[data-seconds]');
+
 let timerID = null;
 let intervalID = null;
 buttonStart.setAttribute('disabled', true);
@@ -19,7 +20,7 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     if (selectedDates[0] < new Date()) {
-      Notiflix.failure("Please choose a date in the future");
+      Notiflix.Notify.failure('Please choose a date in the future');
       return;
     }
     const now = new Date();
@@ -27,13 +28,15 @@ const options = {
     const timeNow = now.getTime();
     buttonStart.removeAttribute('disabled');
     let start = timeNow - selectDate;
-    const {days, hours, minutes, seconds} = convertMs(-start);
+    const { days, hours, minutes, seconds } = convertMs(-start);
     timerDays.textContent = days;
     timerHours.textContent = hours;
     timerMinutes.textContent = minutes;
     timerSeconds.textContent = seconds;
-    localStorage.setItem('timer', -start); }, };
-flatpickr("#datetime-picker", options);
+    localStorage.setItem('timer', -start);
+  },
+};
+flatpickr('#datetime-picker', options);
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -57,22 +60,23 @@ function convertMs(ms) {
 buttonStart.addEventListener('click', showTimer);
 
 function showTimer() {
-    intervalID = setInterval(() => {
-      if (localStorage.getItem('timer') < 1000) {
-        clearInterval(intervalID)
-        localStorage.removeItem('timer');
-        return; } 
-      let dateTimer = localStorage.getItem('timer') - 1000;
-      localStorage.setItem('timer', (dateTimer))
-      const {days, hours, minutes, seconds} = convertMs(dateTimer);
-      timerDays.textContent = addLeadingZero(`${days}`);
-      timerHours.textContent = addLeadingZero(`${hours}`);
-      timerMinutes.textContent = addLeadingZero(`${minutes}`);
-      timerSeconds.textContent = addLeadingZero(`${seconds}`);
-    }, 1000)
+  intervalID = setInterval(() => {
+    if (localStorage.getItem('timer') < 1000) {
+      clearInterval(intervalID);
+      localStorage.removeItem('timer');
+      return;
     }
-const addLeadingZero = value => String(value).padStart(2, "0");
-    
+    let dateTimer = localStorage.getItem('timer') - 1000;
+    localStorage.setItem('timer', dateTimer);
+    const { days, hours, minutes, seconds } = convertMs(dateTimer);
+    timerDays.textContent = addLeadingZero(`${days}`);
+    timerHours.textContent = addLeadingZero(`${hours}`);
+    timerMinutes.textContent = addLeadingZero(`${minutes}`);
+    timerSeconds.textContent = addLeadingZero(`${seconds}`);
+  }, 1000);
+}
+const addLeadingZero = value => String(value).padStart(2, '0');
+
 console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
 console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
 console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}

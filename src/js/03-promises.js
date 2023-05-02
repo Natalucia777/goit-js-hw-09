@@ -7,9 +7,11 @@ let stepInp = null;
 let amountInp = null;
 createPromise(2, 1500)
   .then(({ position, delay }) => {
-    console.log(`✅ Fulfilled promise ${position} in ${delay}ms`); })
+    console.log(`✅ Fulfilled promise ${position} in ${delay}ms`);
+  })
   .catch(({ position, delay }) => {
-    console.log(`❌ Rejected promise ${position} in ${delay}ms`); });
+    console.log(`❌ Rejected promise ${position} in ${delay}ms`);
+  });
 
 function createPromise(position, delay) {
   return new Promise((resolve, reject) => {
@@ -17,11 +19,13 @@ function createPromise(position, delay) {
       const shouldResolve = Math.random() > 0.3;
       if (shouldResolve) {
         resolve({ position, delay });
-      } else { reject({ position, delay }); }
+      } else {
+        reject({ position, delay });
+      }
     }, delay);
   });
-} 
-  
+}
+
 const submitHandler = e => {
   e.preventDefault();
   if (!e.target.tagName === 'BUTTON') return;
@@ -33,9 +37,10 @@ const submitHandler = e => {
   stepInp = Number(step.value);
   amountInp = Number(amount.value);
   for (let i = 1; i <= amountInp; i++) {
-    createPromise(i, stepInp).then(({ position, delay }) => {
-      Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
-    })
+    createPromise(i, stepInp)
+      .then(({ position, delay }) => {
+        Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
+      })
       .catch(({ position, delay }) => {
         Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
       });
