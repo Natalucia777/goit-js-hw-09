@@ -10,55 +10,48 @@ const timerMinutes = document.querySelector('span[data-minutes]');
 const timerSeconds = document.querySelector('span[data-seconds]');
 const inputDate = document.querySelector('input#datetime-picker');
 
-let intervalID = null;
 buttonStart.disabled = true;
+let intervalID = null;
 buttonStart.addEventListener('click', showTimer);
 
 function showTimer() {
   buttonStart.disabled = true;
   inputDate.disabled = true;
+
   intervalID = setInterval(() => {
-    if (localStorage.getItem('timer') < 1000) {
+    const optionsDate = flatpickr('#datetime-picker', options);
+    const options = {
+      enableTime: true,
+      time_24hr: true,
+      defaultDate: new Date(),
+      minuteIncrement: 1,
+      onClose(selectedDates) {
+        if (selectedDates[0] < new Date()) {
+          buttonStart.disabled = true;
+          return Notify.failure('Please choose a date in the future');
+        } else {
+          buttonStart.disabled = false;
+        }
+      },
+    };
+    const addTime = optionsDate.selectedDates[0] - Date.now();
+
+    if (addTime < 1000) {
+      buttonStart.disabled = false;
+      inputDate.disabled = false;
       clearInterval(intervalID);
-      localStorage.removeItem('timer');
-      return;
     }
-    let dateTimer = localStorage.getItem('timer') - 1000;
-    localStorage.setItem('timer', dateTimer);
-    const addLeadingZero = value => String(value).padStart(2, '0');
-    const { days, hours, minutes, seconds } = convertMs(dateTimer);
-    timerDays.textContent = addLeadingZero(`${days}`);
-    timerHours.textContent = addLeadingZero(`${hours}`);
-    timerMinutes.textContent = addLeadingZero(`${minutes}`);
-    timerSeconds.textContent = addLeadingZero(`${seconds}`);
+    const newTime = convertMs(addTime);
+    timerDays.textContent = addLeadingZero(newTime.days);
+    timerHours.textContent = addLeadingZero(newTime.hours);
+    timerMinutes.textContent = addLeadingZero(newTime.minutes);
+    timerSeconds.textContent = addLeadingZero(newTime.seconds);
   }, 1000);
 }
-const options = {
-  enableTime: true,
-  time_24hr: true,
-  defaultDate: new Date(),
-  minuteIncrement: 1,
-  onClose(selectedDates) {
-    if (selectedDates[0] < new Date()) {
-      Notiflix.Notify.failure('Please choose a date in the future');
-      return;
-    } else {
-      buttonStart.removeAttribute('disabled');
-    }
-    const now = new Date();
-    const selectDate = selectedDates[0].getTime();
-    const timeNow = now.getTime();
-    buttonStart.removeAttribute('disabled');
-    let start = timeNow - selectDate;
-    const { days, hours, minutes, seconds } = convertMs(-start);
-    timerDays.textContent = days;
-    timerHours.textContent = hours;
-    timerMinutes.textContent = minutes;
-    timerSeconds.textContent = seconds;
-    localStorage.setItem('timer', -start);
-  },
-};
-flatpickr('#datetime-picker', options);
+function addLeadingZero(value) {
+  return value.String().padStart(2, '0');
+}
+
 function convertMs(ms) {
   const second = 1000;
   const minute = second * 60;
